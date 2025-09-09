@@ -1,0 +1,24 @@
+@{
+    ViewData["Title"] = "Coordinator Inbox";
+}
+<div class="card">
+    <h2>Claims Awaiting Verification</h2>
+    <table class="table">
+        <thead><tr><th>Claim</th><th>Lecturer</th><th>Month</th><th>Status</th><th>Actions</th></tr></thead>
+        <tbody>
+            <tr>
+                <td>#101</td>
+                <td>Alex Lecturer</td>
+                <td>Mar 2025</td>
+                <td><span class="badge warning">Submitted</span></td>
+                <td>
+                    <a class="btn" asp-controller="Claims" asp-action="Details" asp-route-id="101">Open</a>
+                    <button class="btn primary">Verify</button>
+                    <button class="btn">Reject</button>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+
+

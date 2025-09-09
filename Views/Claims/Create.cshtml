@@ -1,0 +1,53 @@
+@{
+    ViewData["Title"] = "Submit Claim";
+}
+<div class="card">
+    <h2>Submit Monthly Claim</h2>
+    <div class="grid cols-3">
+        <div>
+            <label>Month</label>
+            <input type="number" min="1" max="12" placeholder="e.g. 3" />
+        </div>
+        <div>
+            <label>Year</label>
+            <input type="number" min="2020" max="2100" placeholder="e.g. 2025" />
+        </div>
+        <div>
+            <label>Contract</label>
+            <select>
+                <option>Contract A</option>
+                <option>Contract B</option>
+            </select>
+        </div>
+    </div>
+    <h3>Line Items</h3>
+    <table class="table">
+        <thead>
+            <tr><th>Date</th><th>Hours</th><th>Work Type</th><th>Notes</th><th></th></tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td><input type="date" /></td>
+                <td><input type="number" step="0.5" min="0" /></td>
+                <td>
+                    <select>
+                        <option>Lecture</option>
+                        <option>Tutorial</option>
+                        <option>Marking</option>
+                    </select>
+                </td>
+                <td><input type="text" placeholder="Optional notes" /></td>
+                <td><button class="btn">Remove</button></td>
+            </tr>
+        </tbody>
+    </table>
+    <button class="btn">Add Row</button>
+    <h3>Documents</h3>
+    <input type="file" multiple />
+    <div style="margin-top:12px;display:flex;gap:8px;">
+        <button class="btn">Save Draft</button>
+        <button class="btn primary">Submit Claim</button>
+    </div>
+</div>
+
+

@@ -1,0 +1,15 @@
+@{
+    ViewData["Title"] = "Home";
+}
+<div class="card">
+    <h2>Welcome</h2>
+    <p>Select a section to preview the prototype:</p>
+    <div class="grid cols-3">
+        <a class="btn primary" asp-controller="Claims" asp-action="Index">Lecturer Dashboard</a>
+        <a class="btn" asp-controller="Claims" asp-action="Create">Submit Claim</a>
+        <a class="btn" asp-controller="Reviews" asp-action="Verify">Coordinator Inbox</a>
+        <a class="btn" asp-controller="Reviews" asp-action="Approve">Manager Inbox</a>
+    </div>
+    </div>
+
+

@@ -1,0 +1,31 @@
+@{
+    ViewData["Title"] = "Claim Details";
+}
+<div class="card">
+    <h2>Claim #@ViewBag.ClaimId</h2>
+    <div class="grid cols-3">
+        <div><strong>Month:</strong> 03</div>
+        <div><strong>Year:</strong> 2025</div>
+        <div><strong>Status:</strong> <span class="badge warning">Submitted</span></div>
+    </div>
+    <h3>Line Items</h3>
+    <table class="table">
+        <thead><tr><th>Date</th><th>Hours</th><th>Work Type</th><th>Notes</th></tr></thead>
+        <tbody>
+            <tr><td>2025-03-03</td><td>3.0</td><td>Lecture</td><td>-</td></tr>
+            <tr><td>2025-03-10</td><td>2.5</td><td>Marking</td><td>-</td></tr>
+        </tbody>
+    </table>
+    <h3>Documents</h3>
+    <ul>
+        <li>Timesheet_Mar2025.pdf</li>
+        <li>ClassRegister_Week1.xlsx</li>
+    </ul>
+    <h3>Timeline</h3>
+    <ol>
+        <li>Submitted by Lecturer – 2025-03-30</li>
+        <li>Pending Verification by Programme Coordinator</li>
+    </ol>
+</div>
+
+

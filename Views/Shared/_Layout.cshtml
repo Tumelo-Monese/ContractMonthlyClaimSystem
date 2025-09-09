@@ -1,0 +1,34 @@
+@{
+    var appTitle = "Contract Monthly Claim System";
+}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@appTitle - @ViewData["Title"]</title>
+    <link rel="stylesheet" href="~/css/site.css" />
+</head>
+<body>
+    <header class="site-header">
+        <div class="container">
+            <h1>@appTitle</h1>
+            <nav>
+                <a asp-controller="Home" asp-action="Index">Home</a>
+                <a asp-controller="Claims" asp-action="Index">Lecturer Dashboard</a>
+                <a asp-controller="Claims" asp-action="Create">Submit Claim</a>
+                <a asp-controller="Reviews" asp-action="Verify">Coordinator Inbox</a>
+                <a asp-controller="Reviews" asp-action="Approve">Manager Inbox</a>
+            </nav>
+        </div>
+    </header>
+    <main class="container">
+        @RenderBody()
+    </main>
+    <footer class="site-footer">
+        <div class="container"></div>
+    </footer>
+</body>
+</html>
+
+
