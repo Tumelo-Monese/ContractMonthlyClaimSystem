@@ -13,14 +13,14 @@ namespace ContractMonthlyClaimSystem.Controllers
             _claimService = claimService;
         }
 
-        // Coordinator inbox - shows claims awaiting verification
+      
         public IActionResult Verify()
         {
             var pendingClaims = _claimService.GetClaimsByStatus(ClaimStatus.Submitted);
             return View(pendingClaims);
         }
 
-        // Manager inbox - shows claims awaiting approval
+        
         public IActionResult Approve()
         {
             var verifiedClaims = _claimService.GetClaimsByStatus(ClaimStatus.Verified);

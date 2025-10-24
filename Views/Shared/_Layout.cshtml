@@ -1,5 +1,7 @@
 @{
     var appTitle = "Contract Monthly Claim System";
+    var userName = Context.Session.GetString("UserFullName");
+    var userRole = Context.Session.GetString("UserRole");
 }
 <!DOCTYPE html>
 <html lang="en">
@@ -15,7 +17,14 @@
             <h1>@appTitle</h1>
             <nav>
                 <a asp-controller="Home" asp-action="Index">Home</a>
-                @if (ViewData["Title"] is string title && !string.Equals(title, "Home", StringComparison.OrdinalIgnoreCase))
+                @if (!string.IsNullOrEmpty(userName))
+                {
+                    <span class="user-info">
+                        <span class="user-name">@userName</span>
+                        <span class="user-role">(@userRole)</span>
+                    </span>
+                }
+                @if (ViewData["Title"] is string title && !string.Equals(title, "Welcome", StringComparison.OrdinalIgnoreCase))
                 {
                     <span class="current-page">/ @title</span>
                 }
@@ -25,11 +34,7 @@
     <main class="container">
         @RenderBody()
     </main>
-    <footer class="site-footer">
-        <div class="container"></div>
-    </footer>
+    
     @RenderSection("Scripts", required: false)
 </body>
 </html>
-
-

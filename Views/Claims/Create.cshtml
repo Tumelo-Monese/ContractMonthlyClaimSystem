@@ -57,7 +57,7 @@
                 </div>
             </div>
         </div>
-
+        
         <div class="form-section">
             <h3>Additional Information</h3>
             <div class="form-group">
@@ -109,14 +109,37 @@
             const uploadContainer = document.querySelector('.file-upload-container');
 
             const allowedTypes = ['pdf', 'doc', 'docx', 'xls', 'xlsx', 'jpg', 'jpeg', 'png'];
-            const maxFileSize = 10 * 1024 * 1024; // 10MB
+            const maxFileSize = 10 * 1024 * 1024;
 
-            // File input change handler
+              const totalHoursInput = document.getElementById('totalHours');
+            const hourlyRateInput = document.getElementById('hourlyRate');
+            const calculatedAmount = document.getElementById('calculatedAmount');
+            const hoursDisplay = document.getElementById('hoursDisplay');
+            const rateDisplay = document.getElementById('rateDisplay');
+            const totalDisplay = document.getElementById('totalDisplay');
+
+            function calculateTotal() {
+                const hours = parseFloat(totalHoursInput.value) || 0;
+                const rate = parseFloat(hourlyRateInput.value) || 0;
+                const total = hours * rate;
+
+                calculatedAmount.textContent = 'R ' + total.toFixed(2);
+                hoursDisplay.textContent = hours.toFixed(1);
+                rateDisplay.textContent = rate.toFixed(2);
+                totalDisplay.textContent = total.toFixed(2);
+            }
+
+            totalHoursInput.addEventListener('input', calculateTotal);
+            hourlyRateInput.addEventListener('input', calculateTotal);
+
+            calculateTotal();
+
+            
             fileInput.addEventListener('change', function(e) {
                 handleFiles(e.target.files);
             });
 
-            // Drag and drop functionality
+           
             uploadContainer.addEventListener('dragover', function(e) {
                 e.preventDefault();
                 uploadContainer.classList.add('drag-over');

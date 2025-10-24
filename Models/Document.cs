@@ -10,11 +10,11 @@ namespace ContractMonthlyClaimSystem.Models
         public int ClaimId { get; set; }
         
         [Required]
-        [StringLength(255, ErrorMessage = "File name cannot exceed 255 characters")]
+        [StringLength(255, ErrorMessage = "File name cannot be over 255 characters")]
         public string FileName { get; set; } = string.Empty;
         
         [Required]
-        [StringLength(500, ErrorMessage = "File path cannot exceed 500 characters")]
+        [StringLength(500, ErrorMessage = "File path cannot be over 500 characters")]
         public string FilePath { get; set; } = string.Empty;
         
         [Required]
@@ -27,8 +27,7 @@ namespace ContractMonthlyClaimSystem.Models
         
         [StringLength(100)]
         public string MimeType { get; set; } = string.Empty;
-        
-        // Navigation property
+     
         public Claim? Claim { get; set; }
     }
 }

@@ -19,7 +19,6 @@ namespace ContractMonthlyClaimSystem.Controllers
 
         public IActionResult Index()
         {
-            // For demo, show claims for lecturer ID 1
             var lecturerClaims = _claimService.GetClaimsByLecturerId(1);
             return View(lecturerClaims);
         }
@@ -35,7 +34,7 @@ namespace ContractMonthlyClaimSystem.Controllers
         {
             if (ModelState.IsValid)
             {
-                // Set claim properties
+                
                 claim.LecturerId = 1; 
                 claim.LecturerName = "Jon Doe"; 
                 claim.Status = ClaimStatus.Submitted;
@@ -43,7 +42,6 @@ namespace ContractMonthlyClaimSystem.Controllers
                 claim.TotalAmount = claim.TotalHours * claim.HourlyRate;
                 claim.Documents = new List<Document>();
 
-                // Handle file uploads
                 if (uploadedFiles != null && uploadedFiles.Count > 0)
                 {
                     var uploadedDocuments = new List<Document>();
@@ -82,7 +80,7 @@ namespace ContractMonthlyClaimSystem.Controllers
                     claim.Documents = uploadedDocuments;
                 }
 
-                // Add to shared service
+                
                 _claimService.AddClaim(claim);
 
                 TempData["SuccessMessage"] = "Claim submitted successfully!";
@@ -100,7 +98,7 @@ namespace ContractMonthlyClaimSystem.Controllers
                 return NotFound();
             }
 
-            // Load documents for this claim
+            
             claim.Documents = _documents.Where(d => d.ClaimId == id).ToList();
 
             return View(claim);

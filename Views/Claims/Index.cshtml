@@ -60,11 +60,7 @@
                             </div>
                         </div>
 
-                        <!-- Status Tracker for each claim -->
-                        <div class="claim-status-section">
-                            <h4>Claim Progress</h4>
-                            <partial name="_StatusTracker" model="claim.Status" />
-                        </div>
+                       
 
                         @if (!string.IsNullOrEmpty(claim.AdditionalNotes))
                         {

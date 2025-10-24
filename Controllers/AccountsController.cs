@@ -1,8 +1,8 @@
-﻿// Controllers/AccountController.cs
-
-using ContractMonthlyClaimSystem.Models;
+﻿using ContractMonthlyClaimSystem.Models;
 using Microsoft.AspNetCore.Mvc;
 
+namespace ContractMonthlyClaimSystem.Controllers
+{ 
 public class AccountsController : Controller
 {
     private static List<User> _users = new();
@@ -69,4 +69,4 @@ public class AccountsController : Controller
             _ => RedirectToAction("Index", "Home"),
         };
     }
-}
+} }
