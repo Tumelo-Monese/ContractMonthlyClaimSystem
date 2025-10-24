@@ -1,24 +1,124 @@
+@model IEnumerable<ContractMonthlyClaimSystem.Models.Claim>
 @{
-    ViewData["Title"] = "Coordinator Inbox";
+    ViewData["Title"] = "Programme Coordinator";
 }
+
 <div class="card">
-    <h2>Claims Awaiting Verification</h2>
-    <table class="table">
-        <thead><tr><th>Claim</th><th>Lecturer</th><th>Month</th><th>Status</th><th>Actions</th></tr></thead>
-        <tbody>
-            <tr>
-                <td>#101</td>
-                <td>Alex Lecturer</td>
-                <td>Mar 2025</td>
-                <td><span class="badge warning">Submitted</span></td>
-                <td>
-                    <a class="btn" asp-controller="Claims" asp-action="Details" asp-route-id="101">Open</a>
-                    <button class="btn primary">Verify</button>
-                    <button class="btn">Reject</button>
-                </td>
-            </tr>
-        </tbody>
-    </table>
+    <div class="review-header">
+        <h2>Claims Awaiting Verification</h2>
+        <p class="review-description">Review and verify submitted claims from lecturers</p>
+    </div>
+
+    @if (TempData["SuccessMessage"] != null)
+    {
+        <div class="alert alert-success">
+            @TempData["SuccessMessage"]
+        </div>
+    }
+
+    @if (TempData["ErrorMessage"] != null)
+    {
+        <div class="alert alert-danger">
+            @TempData["ErrorMessage"]
+        </div>
+    }
+
+    @if (Model != null && Model.Any())
+    {
+        <div class="claims-grid">
+            @foreach (var claim in Model)
+            {
+                <div class="claim-card">
+                    <div class="claim-header">
+                        <div class="claim-id">#@claim.ClaimId</div>
+                        <div class="claim-status">
+                            <span class="badge warning">@claim.Status</span>
+                        </div>
+                    </div>
+
+                    <div class="claim-content">
+                        <div class="claim-info">
+                            <div class="info-row">
+                                <span class="label">Lecturer:</span>
+                                <span class="value">@claim.LecturerName</span>
+                            </div>
+                            <div class="info-row">
+                                <span class="label">Period:</span>
+                                <span class="value">@GetMonthName(claim.Month) @claim.Year</span>
+                            </div>
+                            <div class="info-row">
+                                <span class="label">Hours:</span>
+                                <span class="value">@claim.TotalHours.ToString("F1")h</span>
+                            </div>
+                            <div class="info-row">
+                                <span class="label">Rate:</span>
+                                <span class="value">R@claim.HourlyRate.ToString("F2")</span>
+                            </div>
+                            <div class="info-row amount-row">
+                                <span class="label">Total:</span>
+                                <span class="value amount">R@claim.TotalAmount.ToString("F2")</span>
+                            </div>
+                        </div>
+
+                        @if (!string.IsNullOrEmpty(claim.AdditionalNotes))
+                        {
+                            <div class="claim-notes">
+                                <span class="label">Notes:</span>
+                                <div class="notes-text">@claim.AdditionalNotes</div>
+                            </div>
+                        }
+
+                        <div class="claim-meta">
+                            <span class="submitted-date">Submitted: @claim.SubmittedOn?.ToString("MMM dd, yyyy 'at' h:mm tt")</span>
+                        </div>
+                    </div>
+
+                    <div class="claim-actions">
+                        <a class="btn btn-sm btn-secondary" asp-action="ClaimDetails" asp-route-id="@claim.ClaimId">
+                            <span class="btn-icon">👁</span>
+                            View Details
+                        </a>
+                        
+                        <form asp-action="VerifyClaim" method="post" class="action-form">
+                            <input type="hidden" name="claimId" value="@claim.ClaimId" />
+                            <div class="action-buttons">
+                                <button type="submit" name="action" value="verify" class="btn btn-sm btn-success">
+                                    <span class="btn-icon">✓</span>
+                                    Verify
+                                </button>
+                                <button type="submit" name="action" value="reject" class="btn btn-sm btn-danger" 
+                                        onclick="return confirm('Are you sure you want to reject this claim?')">
+                                    <span class="btn-icon">✗</span>
+                                    Reject
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            }
+        </div>
+    }
+    else
+    {
+        <div class="empty-state">
+            <div class="empty-icon">✅</div>
+            <h3>All Caught Up!</h3>
+            <p>There are no claims awaiting verification at the moment.</p>
+        </div>
+    }
 </div>
+
+@functions {
+    string GetMonthName(int month)
+    {
+        return month switch
+        {
+            1 => "January", 2 => "February", 3 => "March", 4 => "April",
+            5 => "May", 6 => "June", 7 => "July", 8 => "August",
+            9 => "September", 10 => "October", 11 => "November", 12 => "December",
+            _ => "Unknown"
+        };
+    }
+}
 
 

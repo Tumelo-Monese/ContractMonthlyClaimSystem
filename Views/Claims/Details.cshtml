@@ -1,31 +1,155 @@
+@model ContractMonthlyClaimSystem.Models.Claim
 @{
     ViewData["Title"] = "Claim Details";
 }
+
 <div class="card">
-    <h2>Claim #@ViewBag.ClaimId</h2>
-    <div class="grid cols-3">
-        <div><strong>Month:</strong> 03</div>
-        <div><strong>Year:</strong> 2025</div>
-        <div><strong>Status:</strong> <span class="badge warning">Submitted</span></div>
+    <div class="claims-header">
+        <h2>Claim Details</h2>
+        <a class="btn btn-secondary" asp-action="Index">Back to Claims</a>
     </div>
-    <h3>Line Items</h3>
-    <table class="table">
-        <thead><tr><th>Date</th><th>Hours</th><th>Work Type</th><th>Notes</th></tr></thead>
-        <tbody>
-            <tr><td>2025-03-03</td><td>3.0</td><td>Lecture</td><td>-</td></tr>
-            <tr><td>2025-03-10</td><td>2.5</td><td>Marking</td><td>-</td></tr>
-        </tbody>
-    </table>
-    <h3>Documents</h3>
-    <ul>
-        <li>Timesheet_Mar2025.pdf</li>
-        <li>ClassRegister_Week1.xlsx</li>
-    </ul>
-    <h3>Timeline</h3>
-    <ol>
-        <li>Submitted by Lecturer – 2025-03-30</li>
-        <li>Pending Verification by Programme Coordinator</li>
-    </ol>
+
+    <div class="claim-details">
+        <div class="detail-section">
+            <h3>Claim Information</h3>
+            <div class="detail-grid">
+                <div class="detail-item">
+                    <label>Claim ID</label>
+                    <span>#@Model.ClaimId</span>
+                </div>
+                <div class="detail-item">
+                    <label>Status</label>
+                    <span class="badge @GetStatusClass(Model.Status)">@Model.Status</span>
+                </div>
+                <div class="detail-item">
+                    <label>Period</label>
+                    <span>@GetMonthName(Model.Month) @Model.Year</span>
+                </div>
+                <div class="detail-item">
+                    <label>Submitted On</label>
+                    <span>@Model.SubmittedOn?.ToString("MMMM dd, yyyy 'at' h:mm tt")</span>
+                </div>
+            </div>
+        </div>
+       
+        <div class="detail-section">
+            <h3>Work Details</h3>
+            <div class="detail-grid">
+                <div class="detail-item">
+                    <label>Total Hours</label>
+                    <span>@Model.TotalHours.ToString("F1") hours</span>
+                </div>
+                <div class="detail-item">
+                    <label>Hourly Rate</label>
+                    <span>R@Model.HourlyRate.ToString("F2")</span>
+                </div>
+                <div class="detail-item">
+                    <label>Total Amount</label>
+                    <span class="amount-large">R@Model.TotalAmount.ToString("F2")</span>
+                </div>
+            </div>
+        </div>
+
+        @if (!string.IsNullOrEmpty(Model.AdditionalNotes))
+        {
+            <div class="detail-section">
+                <h3>Additional Notes</h3>
+                <div class="notes-content">
+                    @Model.AdditionalNotes
+                </div>
+            </div>
+        }
+
+        @if (Model.Documents != null && Model.Documents.Any())
+        {
+            <div class="detail-section">
+                <h3>Supporting Documents</h3>
+                <div class="documents-grid">
+                    @foreach (var document in Model.Documents)
+                    {
+                        <div class="document-card">
+                            <div class="document-icon">
+                                @GetDocumentIcon(document.FileType)
+                            </div>
+                            <div class="document-info">
+                                <div class="document-name">@document.FileName</div>
+                                <div class="document-meta">
+                                    <span class="document-size">@FormatFileSize(document.FileSize)</span>
+                                    <span class="document-date">@document.UploadedOn.ToString("MMM dd, yyyy")</span>
+                                </div>
+                            </div>
+                            <div class="document-actions">
+                                <a href="~/@document.FilePath" target="_blank" class="btn btn-sm btn-secondary">
+                                    <span class="btn-icon">👁</span>
+                                    View
+                                </a>
+                            </div>
+                        </div>
+                    }
+                </div>
+            </div>
+        }
+
+        <div class="detail-section">
+            <h3>Lecturer Information</h3>
+            <div class="detail-grid">
+                <div class="detail-item">
+                    <label>Lecturer</label>
+                    <span>@Model.LecturerName</span>
+                </div>
+                <div class="detail-item">
+                    <label>Lecturer ID</label>
+                    <span>@Model.LecturerId</span>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
+
+@functions {
+    string GetMonthName(int month)
+    {
+        return month switch
+        {
+            1 => "January", 2 => "February", 3 => "March", 4 => "April",
+            5 => "May", 6 => "June", 7 => "July", 8 => "August",
+            9 => "September", 10 => "October", 11 => "November", 12 => "December",
+            _ => "Unknown"
+        };
+    }
+
+    string GetStatusClass(ContractMonthlyClaimSystem.Models.ClaimStatus status)
+    {
+        return status switch
+        {
+            ContractMonthlyClaimSystem.Models.ClaimStatus.Draft => "secondary",
+            ContractMonthlyClaimSystem.Models.ClaimStatus.Submitted => "warning",
+            ContractMonthlyClaimSystem.Models.ClaimStatus.Verified => "info",
+            ContractMonthlyClaimSystem.Models.ClaimStatus.Approved => "success",
+            ContractMonthlyClaimSystem.Models.ClaimStatus.Settled => "success",
+            _ => "secondary"
+        };
+    }
+
+    string GetDocumentIcon(string fileType)
+    {
+        return fileType.ToLowerInvariant() switch
+        {
+            ".pdf" => "📄",
+            ".doc" or ".docx" => "📝",
+            ".xls" or ".xlsx" => "📊",
+            ".jpg" or ".jpeg" or ".png" => "🖼️",
+            _ => "📁"
+        };
+    }
+
+    string FormatFileSize(long bytes)
+    {
+        if (bytes == 0) return "0 Bytes";
+        string[] sizes = { "Bytes", "KB", "MB", "GB" };
+        int i = (int)Math.Floor(Math.Log(bytes) / Math.Log(1024));
+        return $"{Math.Round(bytes / Math.Pow(1024, i), 2)} {sizes[i]}";
+    }
+}
 
 

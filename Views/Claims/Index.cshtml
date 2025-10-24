@@ -1,35 +1,133 @@
+@model List<ContractMonthlyClaimSystem.Models.Claim>
 @{
-    ViewData["Title"] = "Lecturer Dashboard";
+    ViewData["Title"] = "My Claims";
 }
+
 <div class="card">
-    <div style="display:flex;justify-content:space-between;align-items:center;">
+    <div class="form-header">
         <h2>My Claims</h2>
-        <a class="btn primary" asp-action="Create">Submit New Claim</a>
+        <p class="form-description">View and manage your submitted claims</p>
     </div>
-    <table class="table">
-        <thead>
-            <tr>
-                <th>Month</th>
-                <th>Year</th>
-                <th>Status</th>
-                <th>Actions</th>
-            </tr>
-        </thead>
-        <tbody>
-            <tr>
-                <td>03</td>
-                <td>2025</td>
-                <td><span class="badge warning">Submitted</span></td>
-                <td><a class="btn" asp-action="Details" asp-route-id="101">Open</a></td>
-            </tr>
-            <tr>
-                <td>02</td>
-                <td>2025</td>
-                <td><span class="badge">Draft</span></td>
-                <td><a class="btn" asp-action="Details" asp-route-id="100">Open</a></td>
-            </tr>
-        </tbody>
-    </table>
+
+    <div style="margin-bottom: 20px;">
+        <a asp-controller="Claims" asp-action="Create" class="btn btn-primary">
+            <span class="btn-icon">+</span>
+            Submit New Claim
+        </a>
+    </div>
+
+    @if (TempData["SuccessMessage"] != null)
+    {
+        <div class="alert alert-success">
+            @TempData["SuccessMessage"]
+        </div>
+    }
+
+    @if (Model != null && Model.Any())
+    {
+        <div class="claims-grid">
+            @foreach (var claim in Model)
+            {
+                <div class="claim-card">
+                    <div class="claim-header">
+                        <div class="claim-id">#@claim.ClaimId</div>
+                        <div class="claim-status">
+                            <span class="badge @GetStatusClass(claim.Status)">@claim.Status</span>
+                        </div>
+                    </div>
+
+                    <div class="claim-content">
+                        <div class="claim-info">
+                            <div class="info-row">
+                                <span class="label">Period:</span>
+                                <span class="value">@GetMonthName(claim.Month) @claim.Year</span>
+                            </div>
+                            <div class="info-row">
+                                <span class="label">Hours:</span>
+                                <span class="value">@claim.TotalHours.ToString("F1")h</span>
+                            </div>
+                            <div class="info-row">
+                                <span class="label">Rate:</span>
+                                <span class="value">R@claim.HourlyRate.ToString("F2")</span>
+                            </div>
+                            <div class="info-row amount-row">
+                                <span class="label">Total:</span>
+                                <span class="value amount">R@claim.TotalAmount.ToString("F2")</span>
+                            </div>
+                            <div class="info-row">
+                                <span class="label">Submitted:</span>
+                                <span class="value">@(claim.SubmittedOn?.ToString("MMM dd, yyyy") ?? "Not submitted")</span>
+                            </div>
+                        </div>
+
+                        <!-- Status Tracker for each claim -->
+                        <div class="claim-status-section">
+                            <h4>Claim Progress</h4>
+                            <partial name="_StatusTracker" model="claim.Status" />
+                        </div>
+
+                        @if (!string.IsNullOrEmpty(claim.AdditionalNotes))
+                        {
+                            <div class="claim-notes">
+                                <span class="label">Notes:</span>
+                                <div class="notes-text">@claim.AdditionalNotes</div>
+                            </div>
+                        }
+                    </div>
+
+                    <div class="claim-actions">
+                        <a asp-controller="Claims" asp-action="Details" asp-route-id="@claim.ClaimId" class="btn btn-sm btn-secondary">
+                            <span class="btn-icon">👁</span>
+                            View Full Details
+                        </a>
+                    </div>
+                </div>
+            }
+        </div>
+    }
+    else
+    {
+        <div class="empty-state">
+            <div class="empty-icon">📋</div>
+            <h3>No Claims Yet</h3>
+            <p>You haven't submitted any claims yet.</p>
+            <a asp-controller="Claims" asp-action="Create" class="btn btn-primary">Submit Your First Claim</a>
+        </div>
+    }
 </div>
 
+@functions {
+    string GetMonthName(int month)
+    {
+        return month switch
+        {
+            1 => "January",
+            2 => "February",
+            3 => "March",
+            4 => "April",
+            5 => "May",
+            6 => "June",
+            7 => "July",
+            8 => "August",
+            9 => "September",
+            10 => "October",
+            11 => "November",
+            12 => "December",
+            _ => "Unknown"
+        };
+    }
 
+    string GetStatusClass(ClaimStatus status)
+    {
+        return status switch
+        {
+          ClaimStatus.Draft => "secondary",
+            ClaimStatus.Submitted => "warning",
+            ClaimStatus.Verified => "info",
+            ClaimStatus.Rejected=> "Danger",
+            ClaimStatus.Approved => "success",
+            ClaimStatus.Settled => "success",
+            _ => "secondary"
+        };
+    }
+}

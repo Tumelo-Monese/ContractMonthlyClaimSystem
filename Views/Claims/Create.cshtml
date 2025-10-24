@@ -1,53 +1,225 @@
+@model ContractMonthlyClaimSystem.Models.Claim
 @{
     ViewData["Title"] = "Submit Claim";
 }
+
 <div class="card">
-    <h2>Submit Monthly Claim</h2>
-    <div class="grid cols-3">
-        <div>
-            <label>Month</label>
-            <input type="number" min="1" max="12" placeholder="e.g. 3" />
-        </div>
-        <div>
-            <label>Year</label>
-            <input type="number" min="2020" max="2100" placeholder="e.g. 2025" />
-        </div>
-        <div>
-            <label>Contract</label>
-            <select>
-                <option>Contract A</option>
-                <option>Contract B</option>
-            </select>
-        </div>
+    <div class="form-header">
+        <h2>Submit Monthly Claim</h2>
+        <p class="form-description">Fill in your work details for the month to submit your claim</p>
     </div>
-    <h3>Line Items</h3>
-    <table class="table">
-        <thead>
-            <tr><th>Date</th><th>Hours</th><th>Work Type</th><th>Notes</th><th></th></tr>
-        </thead>
-        <tbody>
-            <tr>
-                <td><input type="date" /></td>
-                <td><input type="number" step="0.5" min="0" /></td>
-                <td>
-                    <select>
-                        <option>Lecture</option>
-                        <option>Tutorial</option>
-                        <option>Marking</option>
+
+    <form asp-action="Create" method="post" enctype="multipart/form-data" class="claim-form">
+        <div asp-validation-summary="ModelOnly" class="validation-summary"></div>
+
+        <div class="form-section">
+            <h3>Claim Period</h3>
+            <div class="form-row">
+                <div class="form-group">
+                    <label asp-for="Month">Month</label>
+                    <select asp-for="Month" class="form-control">
+                        <option value="">Select Month</option>
+                        <option value="1">January</option>
+                        <option value="2">February</option>
+                        <option value="3">March</option>
+                        <option value="4">April</option>
+                        <option value="5">May</option>
+                        <option value="6">June</option>
+                        <option value="7">July</option>
+                        <option value="8">August</option>
+                        <option value="9">September</option>
+                        <option value="10">October</option>
+                        <option value="11">November</option>
+                        <option value="12">December</option>
                     </select>
-                </td>
-                <td><input type="text" placeholder="Optional notes" /></td>
-                <td><button class="btn">Remove</button></td>
-            </tr>
-        </tbody>
-    </table>
-    <button class="btn">Add Row</button>
-    <h3>Documents</h3>
-    <input type="file" multiple />
-    <div style="margin-top:12px;display:flex;gap:8px;">
-        <button class="btn">Save Draft</button>
-        <button class="btn primary">Submit Claim</button>
-    </div>
+                    <span asp-validation-for="Month" class="field-validation"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="Year">Year</label>
+                    <input asp-for="Year" type="number" min="2020" max="2100" placeholder="e.g. 2025" class="form-control" />
+                    <span asp-validation-for="Year" class="field-validation"></span>
+                </div>
+            </div>
+        </div>
+
+        <div class="form-section">
+            <h3>Work Details</h3>
+            <div class="form-row">
+                <div class="form-group">
+                    <label asp-for="TotalHours">Total Hours Worked</label>
+                    <input asp-for="TotalHours" type="number" step="0.5" min="0" placeholder="e.g. 40.5" class="form-control" />
+                    <span asp-validation-for="TotalHours" class="field-validation"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="HourlyRate">Hourly Rate (R)</label>
+                    <input asp-for="HourlyRate" type="number" step="0.01" min="0" placeholder="e.g. 150.00" class="form-control" />
+                    <span asp-validation-for="HourlyRate" class="field-validation"></span>
+                </div>
+            </div>
+        </div>
+
+        <div class="form-section">
+            <h3>Additional Information</h3>
+            <div class="form-group">
+                <label asp-for="AdditionalNotes">Additional Notes (Optional)</label>
+                <textarea asp-for="AdditionalNotes" rows="4" placeholder="Any additional information about your work..." class="form-control"></textarea>
+                <span asp-validation-for="AdditionalNotes" class="field-validation"></span>
+            </div>
+        </div>
+
+        <div class="form-section">
+            <h3>Supporting Documents</h3>
+            <div class="form-group">
+                <label>Upload Documents (Optional)</label>
+                <div class="file-upload-container">
+                    <input type="file" name="uploadedFiles" multiple accept=".pdf,.doc,.docx,.xls,.xlsx,.jpg,.jpeg,.png" 
+                           class="form-control file-input" id="fileInput" />
+                    <div class="file-upload-info">
+                        <div class="file-info">
+                            <span class="file-icon">📁</span>
+                            <span class="file-text">Click to select files or drag and drop</span>
+                        </div>
+                        <div class="file-limits">
+                            <small class="form-help">
+                                Supported formats: PDF, DOC, DOCX, XLS, XLSX, JPG, JPEG, PNG<br>
+                                Maximum file size: 10MB per file
+                            </small>
+                        </div>
+                    </div>
+                </div>
+                <div id="fileList" class="file-list"></div>
+            </div>
+        </div>
+
+        <div class="form-actions">
+            <button type="button" class="btn btn-secondary" onclick="history.back()">Cancel</button>
+            <button type="submit" class="btn btn-primary btn-submit">
+                <span class="btn-icon">✓</span>
+                Submit Claim
+            </button>
+        </div>
+    </form>
 </div>
+
+@section Scripts {
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const fileInput = document.getElementById('fileInput');
+            const fileList = document.getElementById('fileList');
+            const uploadContainer = document.querySelector('.file-upload-container');
+
+            const allowedTypes = ['pdf', 'doc', 'docx', 'xls', 'xlsx', 'jpg', 'jpeg', 'png'];
+            const maxFileSize = 10 * 1024 * 1024; // 10MB
+
+            // File input change handler
+            fileInput.addEventListener('change', function(e) {
+                handleFiles(e.target.files);
+            });
+
+            // Drag and drop functionality
+            uploadContainer.addEventListener('dragover', function(e) {
+                e.preventDefault();
+                uploadContainer.classList.add('drag-over');
+            });
+
+            uploadContainer.addEventListener('dragleave', function(e) {
+                e.preventDefault();
+                uploadContainer.classList.remove('drag-over');
+            });
+
+            uploadContainer.addEventListener('drop', function(e) {
+                e.preventDefault();
+                uploadContainer.classList.remove('drag-over');
+                handleFiles(e.dataTransfer.files);
+            });
+
+            function handleFiles(files) {
+                fileList.innerHTML = '';
+
+                Array.from(files).forEach(function(file) {
+                    if (validateFile(file)) {
+                        addFileToList(file);
+                    }
+                });
+            }
+
+            function validateFile(file) {
+                const fileExtension = file.name.split('.').pop().toLowerCase();
+
+                if (!allowedTypes.includes(fileExtension)) {
+                    showError(`File "${file.name}" has an unsupported format.`);
+                    return false;
+                }
+
+                if (file.size > maxFileSize) {
+                    showError(`File "${file.name}" is too large. Maximum size is 10MB.`);
+                    return false;
+                }
+
+                return true;
+            }
+
+            function addFileToList(file) {
+                const fileItem = document.createElement('div');
+                fileItem.className = 'file-item';
+
+                const fileSize = formatFileSize(file.size);
+                const fileIcon = getFileIcon(file.name);
+
+                fileItem.innerHTML = `
+                    <div class="file-details">
+                        <span class="file-icon">${fileIcon}</span>
+                        <div class="file-info">
+                            <span class="file-name">${file.name}</span>
+                            <span class="file-size">${fileSize}</span>
+                        </div>
+                    </div>
+                    <button type="button" class="btn-remove" onclick="removeFile(this)">×</button>
+                `;
+
+                fileList.appendChild(fileItem);
+            }
+
+            function formatFileSize(bytes) {
+                if (bytes === 0) return '0 Bytes';
+                const k = 1024;
+                const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+                const i = Math.floor(Math.Log(bytes) / Math.log(k));
+                return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+            }
+
+            function getFileIcon(fileName) {
+                const extension = fileName.split('.').pop().toLowerCase();
+                const icons = {
+                    'pdf': '📄',
+                    'doc': '📝',
+                    'docx': '📝',
+                    'xls': '📊',
+                    'xlsx': '📊',
+                    'jpg': '🖼️',
+                    'jpeg': '🖼️',
+                    'png': '🖼️'
+                };
+                return icons[extension] || '📁';
+            }
+
+            function showError(message) {
+                const errorDiv = document.createElement('div');
+                errorDiv.className = 'file-error';
+                errorDiv.textContent = message;
+                fileList.appendChild(errorDiv);
+
+                setTimeout(() => {
+                    errorDiv.remove();
+                }, 5000);
+            }
+
+            window.removeFile = function(button) {
+                button.parentElement.remove();
+            };
+        });
+    </script>
+}
+}
 
 

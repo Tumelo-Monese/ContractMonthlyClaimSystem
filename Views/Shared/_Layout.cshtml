@@ -15,10 +15,10 @@
             <h1>@appTitle</h1>
             <nav>
                 <a asp-controller="Home" asp-action="Index">Home</a>
-                <a asp-controller="Claims" asp-action="Index">Lecturer Dashboard</a>
-                <a asp-controller="Claims" asp-action="Create">Submit Claim</a>
-                <a asp-controller="Reviews" asp-action="Verify">Coordinator Inbox</a>
-                <a asp-controller="Reviews" asp-action="Approve">Manager Inbox</a>
+                @if (ViewData["Title"] is string title && !string.Equals(title, "Home", StringComparison.OrdinalIgnoreCase))
+                {
+                    <span class="current-page">/ @title</span>
+                }
             </nav>
         </div>
     </header>
@@ -28,6 +28,7 @@
     <footer class="site-footer">
         <div class="container"></div>
     </footer>
+    @RenderSection("Scripts", required: false)
 </body>
 </html>
 

@@ -1,0 +1,45 @@
+﻿@model ContractMonthlyClaimSystem.Models.Registration
+
+@{
+    ViewData["Title"] = "Registration";
+}
+<h2>Register</h2>
+
+<form asp-action="Register" method="post" class="form">
+    <div asp-validation-summary="All" class="text-danger"></div>
+
+    <div>
+        <label asp-for="FirstName"></label>
+        <input asp-for="FirstName" />
+        <span asp-validation-for="FirstName" class="text-danger"></span>
+    </div>
+
+    <div>
+        <label asp-for="LastName"></label>
+        <input asp-for="LastName" />
+        <span asp-validation-for="LastName" class="text-danger"></span>
+    </div>
+
+    <div>
+        <label asp-for="Role"></label>
+        <select asp-for="Role" asp-items="Html.GetEnumSelectList<ContractMonthlyClaimSystem.Models.UserRole>()"></select>
+        <span asp-validation-for="Role" class="text-danger"></span>
+    </div>
+
+    <div>
+        <label asp-for="Password"></label>
+        <input asp-for="Password" type="password" />
+        <span asp-validation-for="Password" class="text-danger"></span>
+    </div>
+
+    <div>
+        <label asp-for="ConfirmPassword"></label>
+        <input asp-for="ConfirmPassword" type="password" />
+        <span asp-validation-for="ConfirmPassword" class="text-danger"></span>
+    </div>
+
+    <button type="submit">Register</button>
+</form>
+
+
+}
