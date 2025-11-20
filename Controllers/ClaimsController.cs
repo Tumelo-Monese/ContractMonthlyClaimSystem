@@ -34,6 +34,9 @@ namespace ContractMonthlyClaimSystem.Controllers
         {
             if (ModelState.IsValid)
             {
+                return View(claim);
+            }
+            
                 
                 claim.LecturerId = 1; 
                 claim.LecturerName = "Jon Doe"; 
@@ -41,6 +44,7 @@ namespace ContractMonthlyClaimSystem.Controllers
                 claim.SubmittedOn = DateTime.Now;
                 claim.TotalAmount = claim.TotalHours * claim.HourlyRate;
                 claim.Documents = new List<Document>();
+
 
                 if (uploadedFiles != null && uploadedFiles.Count > 0)
                 {
@@ -87,8 +91,7 @@ namespace ContractMonthlyClaimSystem.Controllers
                 return RedirectToAction("Index");
             }
 
-            return View(claim);
-        }
+          
 
         public IActionResult Details(int id)
         {

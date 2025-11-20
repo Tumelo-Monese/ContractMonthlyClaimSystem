@@ -1,9 +1,17 @@
+using ContractMonthlyClaimSystem.Models;
 using ContractMonthlyClaimSystem.Services;
+using FluentValidation;
+using FluentValidation.AspNetCore;
+
+
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-builder.Services.AddControllersWithViews();
+builder.Services.AddControllersWithViews()
+    .AddFluentValidation(fv => fv.RegisterValidatorsFromAssemblyContaining<ClaimValidation>());
+
+
 
 // ADD THIS - Session configuration
 builder.Services.AddSession(options =>
@@ -30,8 +38,6 @@ app.UseHttpsRedirection();
 app.UseStaticFiles();
 app.UseRouting();
 app.UseAuthorization();
-
-// ADD THIS - Enable session middleware
 app.UseSession();
 
 app.MapControllerRoute(

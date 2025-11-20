@@ -10,6 +10,7 @@
     </div>
 
     <form asp-action="Create" method="post" enctype="multipart/form-data" class="claim-form">
+        @Html.AntiForgeryToken()
         <div asp-validation-summary="ModelOnly" class="text-danger"></div>
 
         <div class="form-section">
@@ -103,6 +104,8 @@
 
 @section Scripts {
     <script>
+
+        <partial name="_ValidationScriptsPartial" />
         document.addEventListener('DOMContentLoaded', function() {
             const fileInput = document.getElementById('fileInput');
             const fileList = document.getElementById('fileList');
