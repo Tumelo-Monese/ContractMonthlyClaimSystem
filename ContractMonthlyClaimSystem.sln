@@ -1,9 +1,11 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
-VisualStudioVersion = 17.14.36414.22 d17.14
+VisualStudioVersion = 17.14.36414.22
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ContractMonthlyClaimSystem", "ContractMonthlyClaimSystem.csproj", "{F2B4CB2A-0F74-53DD-6D07-594BB46594A2}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ContractMonthlyClaimsTests", "..\ContractMonthlyClaimsTests\ContractMonthlyClaimsTests.csproj", "{BFF87B4D-3203-4C41-8226-DB66D219E8D9}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -15,6 +17,10 @@ Global
 		{F2B4CB2A-0F74-53DD-6D07-594BB46594A2}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F2B4CB2A-0F74-53DD-6D07-594BB46594A2}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F2B4CB2A-0F74-53DD-6D07-594BB46594A2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BFF87B4D-3203-4C41-8226-DB66D219E8D9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BFF87B4D-3203-4C41-8226-DB66D219E8D9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BFF87B4D-3203-4C41-8226-DB66D219E8D9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BFF87B4D-3203-4C41-8226-DB66D219E8D9}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
