@@ -2,7 +2,7 @@
 
 namespace ContractMonthlyClaimSystem.Models
 {
-    public class ClaimValidation : AbstractValidator<Claim>
+    public class ClaimValidation: AbstractValidator<Claim>
     {
         public ClaimValidation()
         {
@@ -21,3 +21,4 @@ namespace ContractMonthlyClaimSystem.Models
         }
     }
 }
+ 

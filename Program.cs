@@ -2,18 +2,30 @@ using ContractMonthlyClaimSystem.Models;
 using ContractMonthlyClaimSystem.Services;
 using FluentValidation;
 using FluentValidation.AspNetCore;
+using Microsoft.AspNetCore.Mvc;
+
 
 
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-builder.Services.AddControllersWithViews()
-    .AddFluentValidation(fv => fv.RegisterValidatorsFromAssemblyContaining<ClaimValidation>());
+builder.Services.AddControllersWithViews();
+    builder.Services.AddValidatorsFromAssemblyContaining<ClaimValidation>();
+
+builder.Services.AddFluentValidationAutoValidation(
+);
+
+builder.Services.Configure<ApiBehaviorOptions>(options =>
+{
+    options.SuppressModelStateInvalidFilter = false;
+});
 
 
 
-// ADD THIS - Session configuration
+
+
+// Session configuration
 builder.Services.AddSession(options =>
 {
     options.IdleTimeout = TimeSpan.FromMinutes(30);
@@ -21,13 +33,13 @@ builder.Services.AddSession(options =>
     options.Cookie.IsEssential = true;
 });
 
-// Register your services
+// Registering services
 builder.Services.AddSingleton<IFileUploadService, FileUploadService>();
 builder.Services.AddSingleton<IClaimservice, ClaimService>();
 
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
+// Configuring HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
 {
     app.UseExceptionHandler("/Home/Error");

@@ -130,7 +130,7 @@ namespace ContractMonthlyClaimSystem.Services
 
         private string GenerateSecureFileName(string originalFileName, int claimId)
         {
-            // Remove extension and create hash
+            
             var nameWithoutExtension = Path.GetFileNameWithoutExtension(originalFileName);
             var timestamp = DateTime.Now.ToString("yyyyMMddHHmmss");
             var hash = ComputeHash($"{claimId}_{nameWithoutExtension}_{timestamp}");

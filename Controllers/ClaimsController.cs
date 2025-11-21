@@ -24,6 +24,7 @@ namespace ContractMonthlyClaimSystem.Controllers
         }
 
         [HttpGet]
+        
         public IActionResult Create()
         {
             return View();
@@ -32,7 +33,7 @@ namespace ContractMonthlyClaimSystem.Controllers
         [HttpPost]
         public async Task<IActionResult> Create(Claim claim, List<IFormFile> uploadedFiles)
         {
-            if (ModelState.IsValid)
+            if (!ModelState.IsValid)
             {
                 return View(claim);
             }
