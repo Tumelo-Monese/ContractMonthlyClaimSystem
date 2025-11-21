@@ -4,28 +4,18 @@ using FluentValidation;
 using FluentValidation.AspNetCore;
 using Microsoft.AspNetCore.Mvc;
 
-
-
-
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
-    builder.Services.AddValidatorsFromAssemblyContaining<ClaimValidation>();
-
-builder.Services.AddFluentValidationAutoValidation(
-);
+builder.Services.AddValidatorsFromAssemblyContaining<ClaimValidation>();
+builder.Services.AddFluentValidationAutoValidation();
 
 builder.Services.Configure<ApiBehaviorOptions>(options =>
 {
     options.SuppressModelStateInvalidFilter = false;
 });
 
-
-
-
-
-// Session configuration
 builder.Services.AddSession(options =>
 {
     options.IdleTimeout = TimeSpan.FromMinutes(30);
@@ -36,10 +26,26 @@ builder.Services.AddSession(options =>
 // Registering services
 builder.Services.AddSingleton<IFileUploadService, FileUploadService>();
 builder.Services.AddSingleton<IClaimservice, ClaimService>();
+builder.Services.AddScoped<IClaimVerificationService, ClaimVerificationService>();
 
+// Authentication
+builder.Services.AddAuthentication("CookieAuth")
+    .AddCookie("CookieAuth", options =>
+    {
+        options.LoginPath = "/Account/Login";
+    });
+
+
+builder.Services.AddAuthorization(options =>
+{
+    options.AddPolicy("ClaimReviewer", policy =>
+        policy.RequireRole("ProgrammeCoordinator", "AcademicManager"));
+});
+
+// Building the app
 var app = builder.Build();
 
-// Configuring HTTP request pipeline.
+// Configure HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
 {
     app.UseExceptionHandler("/Home/Error");
@@ -48,8 +54,12 @@ if (!app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 app.UseStaticFiles();
+
 app.UseRouting();
+
+app.UseAuthentication(); 
 app.UseAuthorization();
+
 app.UseSession();
 
 app.MapControllerRoute(

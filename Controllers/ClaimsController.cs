@@ -8,13 +8,15 @@ namespace ContractMonthlyClaimSystem.Controllers
     {
         private readonly IFileUploadService _fileUploadService;
         private readonly IClaimservice _claimService;
+        private readonly IClaimVerificationService _claimVerificationService;
         private static List<Document> _documents = new List<Document>();
         private static int _nextDocumentId = 1;
 
-        public ClaimsController(IFileUploadService fileUploadService, IClaimservice claimService)
+        public ClaimsController(IFileUploadService fileUploadService, IClaimservice claimService, IClaimVerificationService claimVerificationService)
         {
             _fileUploadService = fileUploadService;
             _claimService = claimService;
+            _claimVerificationService = claimVerificationService;
         }
 
         public IActionResult Index()
@@ -39,7 +41,18 @@ namespace ContractMonthlyClaimSystem.Controllers
             {
                 return View(claim);
             }
-            
+
+            var verificationResult = _claimVerificationService.VerifyClaim(claim);
+
+            if (!verificationResult.IsValid)
+            {
+              
+                foreach (var error in verificationResult.Errors)
+                {
+                    ModelState.AddModelError(string.Empty, error);
+                }
+                return View(claim);
+            }
 
             claim.LecturerId = 1; 
                 claim.LecturerName = "Jon Doe"; 
