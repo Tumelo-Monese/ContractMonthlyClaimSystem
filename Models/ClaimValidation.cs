@@ -16,8 +16,6 @@ namespace ContractMonthlyClaimSystem.Models
             RuleFor(c => c.HourlyRate).InclusiveBetween(1m, 10000m)
                 .WithMessage("Hourly rate must be between R1 and R10,000.");
 
-            RuleFor(c => c.TotalAmount).GreaterThan(0)
-                .WithMessage("Total amount must be greater than zero.");
         }
     }
 }

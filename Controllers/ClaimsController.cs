@@ -24,7 +24,7 @@ namespace ContractMonthlyClaimSystem.Controllers
         }
 
         [HttpGet]
-        
+
         public IActionResult Create()
         {
             return View();
@@ -33,13 +33,15 @@ namespace ContractMonthlyClaimSystem.Controllers
         [HttpPost]
         public async Task<IActionResult> Create(Claim claim, List<IFormFile> uploadedFiles)
         {
+           
+
             if (!ModelState.IsValid)
             {
                 return View(claim);
             }
             
-                
-                claim.LecturerId = 1; 
+
+            claim.LecturerId = 1; 
                 claim.LecturerName = "Jon Doe"; 
                 claim.Status = ClaimStatus.Submitted;
                 claim.SubmittedOn = DateTime.Now;
